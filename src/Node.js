@@ -7,7 +7,7 @@ export default class Node {
      * @param {*} inputs array of the nodes which acts as an input to this node
      * @param {*} actFuncType activation function
      */
-    constructor(model, id, inputs, type = INPUT_TEXT) {
+    constructor(model, id, type = INPUT_TEXT) {
         /* TODO: 
             1. Have a proper logic for setting biases and weights 
             2. handle all Activation function types
@@ -27,11 +27,8 @@ export default class Node {
         this.activationFunction = this.model.getActFun();
         this.id = id;
         this.model = model;
-        this.inputs = inputs;
 
         this.type = type;
-
-        this.weightMap = this.setMap();
     }
 
     calc() {
@@ -45,20 +42,26 @@ export default class Node {
         let sum = 0;
 
         this.weightMap.forEach((key, value) => {
-            sum = sum + (value[0] * value[1]);
+            sum = sum + (value[0] * value[1].calc());
         })
 
         return sum;
     }
 
+    /**
+     * the weight map will look like
+     * {
+     *  1: [w1, output from the connected node],
+     *  2: [w2, output from the connected node],
+     * ......
+     * }
+     */
     setMap() {
-        const map = new Map();
+        this.weightMap = new Map();
         for (let i = 0; i < this.inputs.length; i+=1) {
             const id = this.inputs[i].id;
-            map.set(id, [this.getRandomWeight(), this.inputs[i].calc()])
+            this.weightMap.set(id, [this.getRandomWeight(), this.inputs[i]])
         }
-
-        return map;
     }
 
     getRandomWeight() {
@@ -66,5 +69,16 @@ export default class Node {
             case (DEFAULT_TEXT):
                 return (Math.floor(Math.random() * (21)) + 10) / 10; // return random no between -1 to 1 within 1 decimal
         }
+    }
+
+    
+    get inputs() {
+        return this._inputs || false;
+    }
+
+    set inputs(v) {
+        this._inputs = v;
+        this.setMap();
+        console.log('this.weightMap: ', this.weightMap);
     }
 }

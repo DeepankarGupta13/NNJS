@@ -13,10 +13,19 @@ export default class Model {
         this.activationFunction = activationFunction;
         this.input = input;
 
-        this.inputLayer = new Layer(this, INPUT_TEXT, input);
+        this.inputLayer = new Layer(this, INPUT_TEXT, input.length);
 
         this.hiddenLayers = [];
 
+        /**
+         *  a. 1 hidden layer for simple tasks (e.g., linear or low-dimensional data).
+            b. 2-3 hidden layers for moderately complex tasks.
+            c. More than 3 layers for highly complex tasks (e.g., image processing, NLP tasks).
+         */
+        /* TODO: implement regulation to drop layers to check if its overfitting 
+            add layers or nodes if its underfitting
+            L2 regularization (weight decay): Penalizes large weights, which helps reduce overfitting.
+        */
         for (let i = 0 ; i < noOfHiddenLayer; i++) {
             this.hiddenLayers.push(
                 new Layer(this, HIDDEN_TEXT),
@@ -35,7 +44,17 @@ export default class Model {
     }
 
     // function handles the layer connection
-    mapLayers(inLayer, outLayer) {
+    mapLayers() {
 
+        // mapping input layer to the hidden layer
+        this.hiddenLayers[0].setInput(this.inputLayer);
+
+        // mapping layers to its previous layers
+        for (let i = 1; i < this.hiddenLayers.length; i++) {
+            this.hiddenLayers[i].setInput(this.hiddenLayers[i - 1]);
+        }
+
+        // mapping output layer to the last hidden layer
+        this.outputLayer.setInput(this.hiddenLayers[this.hiddenLayers.length - 1]);
     }
 }
