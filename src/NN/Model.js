@@ -1,5 +1,6 @@
-import Layer from "./Layer"
-import { DEFAULT_TEXT, HIDDEN_TEXT, INPUT_TEXT, OUTPUT_TEXT } from "./utils/Constant"
+import Layer from "./Layer.js"
+import { DEFAULT_TEXT, HIDDEN_TEXT, INPUT_TEXT, OUTPUT_TEXT } from "../utils/Constant.js"
+import { idGenerator } from '../utils/utils.js'
 
 export default class Model {
     /* TODO:
@@ -8,12 +9,12 @@ export default class Model {
         3. Layer Connections
     */
     //for now the input is number and output is number and the no of nodes is 1 for each layer
-    constructor(input, noOfHiddenLayer = 1, activationFunction = DEFAULT_TEXT) {
-        this.idGeneator = idGenerator()
+    constructor(inputNodesNo, noOfHiddenLayer = 1, activationFunction = DEFAULT_TEXT) {
+        this.idGenerator = idGenerator()
         this.activationFunction = activationFunction;
-        this.input = input;
+        this.inputNodesNo = inputNodesNo;
 
-        this.inputLayer = new Layer(this, INPUT_TEXT, input.length);
+        this.inputLayer = new Layer(this, INPUT_TEXT, inputNodesNo);
 
         this.hiddenLayers = [];
 
@@ -28,11 +29,13 @@ export default class Model {
         */
         for (let i = 0 ; i < noOfHiddenLayer; i++) {
             this.hiddenLayers.push(
-                new Layer(this, HIDDEN_TEXT),
+                new Layer(this, HIDDEN_TEXT, 2),
             )
         }
 
         this.outputLayer = new Layer(this, OUTPUT_TEXT);
+
+        this.mapLayers();
     }
 
     // TODO: Handle all the activation functions types
@@ -47,14 +50,25 @@ export default class Model {
     mapLayers() {
 
         // mapping input layer to the hidden layer
-        this.hiddenLayers[0].setInput(this.inputLayer);
+        this.hiddenLayers[0].connectNodes(this.inputLayer);
 
         // mapping layers to its previous layers
         for (let i = 1; i < this.hiddenLayers.length; i++) {
-            this.hiddenLayers[i].setInput(this.hiddenLayers[i - 1]);
+            this.hiddenLayers[i].connectNodes(this.hiddenLayers[i - 1]);
         }
 
         // mapping output layer to the last hidden layer
-        this.outputLayer.setInput(this.hiddenLayers[this.hiddenLayers.length - 1]);
+        this.outputLayer.connectNodes(this.hiddenLayers[this.hiddenLayers.length - 1]);
+    }
+
+    // TODO: algo for training model
+    train(input, output) {
+        /** TODO:
+         * pass the input
+         * get the output from forward propagation
+         * backward propagation to get the losses and fix the weights accordingly
+         */
+
+        this.inputLayer.input()
     }
 }

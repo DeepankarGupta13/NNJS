@@ -4,3 +4,7 @@ function* idGenerator() {
         yield num++;
     }
 }
+
+export {
+    idGenerator,
+}

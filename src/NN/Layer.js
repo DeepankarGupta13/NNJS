@@ -1,5 +1,5 @@
-import Node from "./node";
-import { DEFAULT_TEXT, HIDDEN_TEXT, INPUT_TEXT, OUTPUT_TEXT } from "./utils/Constant";
+import Node from "./Node";
+import { DEFAULT_TEXT, HIDDEN_TEXT, INPUT_TEXT, OUTPUT_TEXT } from "../utils/Constant";
 
 // mapping of weights and inputs should be handled at layers instead of nodes
 export default class Layer {
@@ -36,11 +36,16 @@ export default class Layer {
         }
     }
 
-    // set Input map for nodes
-    setInput(inputLayer) {
+    /**
+     * connects the node of current layer with input layer
+     * @param {*Layer} inputLayer 
+     */
+    connectNodes(inputLayer) {
         for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].inputs = inputLayer.nodes;
         }
     }
+
+    
 
 }

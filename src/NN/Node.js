@@ -1,4 +1,4 @@
-import { DEFAULT_TEXT, INPUT_TEXT } from "./utils/Constant";
+import { DEFAULT_TEXT, INPUT_TEXT } from "../utils/Constant";
 
 export default class Node {
     /**
@@ -23,10 +23,9 @@ export default class Node {
         */
 
         this.bias = 0;
-        this.actFuncType = actFuncType;
+        this.model = model;
         this.activationFunction = this.model.getActFun();
         this.id = id;
-        this.model = model;
 
         this.type = type;
     }
@@ -40,10 +39,6 @@ export default class Node {
 
     weightedSum() {
         let sum = 0;
-
-        this.weightMap.forEach((key, value) => {
-            sum = sum + (value[0] * value[1].calc());
-        })
 
         return sum;
     }
@@ -59,13 +54,13 @@ export default class Node {
     setMap() {
         this.weightMap = new Map();
         for (let i = 0; i < this.inputs.length; i+=1) {
-            const id = this.inputs[i].id;
+            const id = this.inputs[i].id.value;
             this.weightMap.set(id, [this.getRandomWeight(), this.inputs[i]])
         }
     }
 
     getRandomWeight() {
-        switch (this.actFuncType) {
+        switch (this.model.activationFunction) {
             case (DEFAULT_TEXT):
                 return (Math.floor(Math.random() * (21)) + 10) / 10; // return random no between -1 to 1 within 1 decimal
         }
@@ -73,12 +68,11 @@ export default class Node {
 
     
     get inputs() {
-        return this._inputs || false;
+        return this._inputs || new Map();
     }
 
     set inputs(v) {
         this._inputs = v;
         this.setMap();
-        console.log('this.weightMap: ', this.weightMap);
     }
 }
