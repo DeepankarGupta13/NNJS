@@ -2,6 +2,7 @@ import Node from "./Node";
 import { DEFAULT_TEXT, HIDDEN_TEXT, INPUT_TEXT, OUTPUT_TEXT } from "../utils/Constant";
 
 // mapping of weights and inputs should be handled at layers instead of nodes
+/* For reference: https://www.notion.so/LAYERS-code-flow-10143638c0c080aba99ffbaa24a0cd63 */
 export default class Layer {
     constructor(model, type = INPUT_TEXT, noOfNodes = 1) {
         this.model = model;
@@ -45,7 +46,4 @@ export default class Layer {
             this.nodes[i].inputs = inputLayer.nodes;
         }
     }
-
-    
-
 }

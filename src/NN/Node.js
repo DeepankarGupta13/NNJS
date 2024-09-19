@@ -39,7 +39,9 @@ export default class Node {
 
     weightedSum() {
         let sum = 0;
-
+        for (let [key, value] of this.weightMap) {
+            sum += value[0] * value[1].calc();
+        }
         return sum;
     }
 
@@ -54,6 +56,10 @@ export default class Node {
     setMap() {
         this.weightMap = new Map();
         for (let i = 0; i < this.inputs.length; i+=1) {
+            // the the is input node then theres no need for mapping it to its input node because there will be no input node for this.
+            if (this.type === INPUT_TEXT) {
+                continue;
+            }
             const id = this.inputs[i].id.value;
             this.weightMap.set(id, [this.getRandomWeight(), this.inputs[i]])
         }

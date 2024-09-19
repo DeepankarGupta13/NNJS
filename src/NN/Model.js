@@ -29,7 +29,7 @@ export default class Model {
         */
         for (let i = 0 ; i < noOfHiddenLayer; i++) {
             this.hiddenLayers.push(
-                new Layer(this, HIDDEN_TEXT, 2),
+                new Layer(this, HIDDEN_TEXT, 1),
             )
         }
 
@@ -62,13 +62,58 @@ export default class Model {
     }
 
     // TODO: algo for training model
-    train(input, output) {
+    train(inputs, outputs) {
         /** TODO:
          * pass the input
          * get the output from forward propagation
          * backward propagation to get the losses and fix the weights accordingly
          */
 
-        this.inputLayer.input()
+        // make a map to map inputs and their corresponding output
+        this.trainMap = new Map();
+        for (let i = 0; i < inputs.length; i++) {
+            this.trainMap.set(inputs[i], outputs[i]);
+        }
+
+        // TODO: Make this generalized to handle multiple inputs
+        // forward propagation and get the output from the network
+        const NNOutput = this.forwardPropagate(inputs);
+        console.log('NNOutput: ', NNOutput);
+        console.log('outputs: ', outputs);
+
+        // calculate loss
+        const loss = this.calculateLoss(NNOutput, outputs);
+        console.log('loss: ', loss);
+
+    }
+
+    calculateLoss(NNOutput, RequiredOutput) {
+        const loss = [];
+        for (let i = 0; i < NNOutput.length; i++) {
+            loss.push(RequiredOutput[i] - NNOutput[i])
+        }
+        return loss;
+    }
+
+    forwardPropagate(inputs) {
+        const output = [];
+        for (let i = 0; i < inputs.length; i++) {
+            this.inputLayer.nodes[0].inputs = [inputs[i]];
+            output.push(this.outputLayer.nodes[0].calc());
+        }
+        return output;
+    }
+
+    getAllNodesAsObject() {
+        const layersNode = {}
+
+        layersNode[`this.inputLayer`] = [...this.inputLayer.nodes];
+        layersNode[`this.outputLayer`] = [...this.outputLayer.nodes];
+
+        for (let i = 0; i < this.hiddenLayers.length; i++) {
+            layersNode[`this.hiddenLayers${i}`] = [...this.hiddenLayers[i].nodes]
+        }
+
+        return layersNode;
     }
 }
