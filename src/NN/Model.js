@@ -77,22 +77,16 @@ export default class Model {
 
         // TODO: Make this generalized to handle multiple inputs
         // forward propagation and get the output from the network
-        const NNOutput = this.forwardPropagate(inputs);
-        console.log('NNOutput: ', NNOutput);
+        const predictions = this.forwardPropagate(inputs);
+        console.log('predictions: ', predictions);
         console.log('outputs: ', outputs);
 
         // calculate loss
-        const loss = this.calculateLoss(NNOutput, outputs);
+        const loss = this.calculateLoss(predictions, outputs);
         console.log('loss: ', loss);
 
-    }
+        // backward propagation
 
-    calculateLoss(NNOutput, RequiredOutput) {
-        const loss = [];
-        for (let i = 0; i < NNOutput.length; i++) {
-            loss.push(RequiredOutput[i] - NNOutput[i])
-        }
-        return loss;
     }
 
     forwardPropagate(inputs) {
@@ -102,6 +96,23 @@ export default class Model {
             output.push(this.outputLayer.nodes[0].calc());
         }
         return output;
+    }
+
+    /* 
+    *   TODO: Implement other loss calculation methods
+    */
+   // Root Mean Square Method - for loss calculation
+    calculateLoss(predictions, targets) {
+        let sum = 0;
+        for (let i = 0; i < predictions.length; i++) {
+            let error = predictions[i] - targets[i];
+            sum += error * error;
+        }
+        return sum / predictions.length;
+    }
+
+    backwardPropagate() {
+        
     }
 
     getAllNodesAsObject() {

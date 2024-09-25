@@ -9,9 +9,6 @@ export default class Node {
      */
     constructor(model, id, type = INPUT_TEXT) {
         /* TODO: 
-            1. Have a proper logic for setting biases and weights 
-            2. handle all Activation function types
-            3. forward propagation
             4. loss calculation: Measuring the Error
             5. back propagation: Learning from Errors
             6. Gradient Descent: Optimizing the Network
