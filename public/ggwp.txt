@@ -1,0 +1,51 @@
+// Initialize parameters
+let w1 = Math.random();  // Weight from input to hidden layer
+let b1 = Math.random();  // Bias at hidden layer
+let w2 = Math.random();  // Weight from hidden layer to output
+let b2 = Math.random();  // Bias at output layer
+let learningRate = 0.01;
+
+const inputs = [1, 2, 3, 4, 5, 6];
+const targets = [1, 4, 9, 16, 25, 36];
+
+// Forward and backward pass for one epoch
+function trainNetwork(input, target) {
+    // Forward pass: Hidden layer
+    let h = w1 * input + b1;  // Hidden layer output
+
+    // Forward pass: Output layer
+    let prediction = w2 * h + b2;  // Final prediction
+
+    // Loss (Mean Squared Error)
+    let loss = Math.pow(prediction - target, 2);
+
+    // Backward pass: Calculate gradients
+    let dL_dPred = 2 * (prediction - target);  // Gradient w.r.t prediction
+    let dL_dW2 = dL_dPred * h;  // Gradient w.r.t w2
+    let dL_dB2 = dL_dPred;  // Gradient w.r.t b2
+
+    let dL_dH = dL_dPred * w2;  // Gradient w.r.t hidden layer output
+    let dL_dW1 = dL_dH * input;  // Gradient w.r.t w1
+    let dL_dB1 = dL_dH;  // Gradient w.r.t b1
+
+    // Update weights and biases
+    w2 -= learningRate * dL_dW2;
+    b2 -= learningRate * dL_dB2;
+    w1 -= learningRate * dL_dW1;
+    b1 -= learningRate * dL_dB1;
+
+    return loss;
+}
+
+// Train for multiple epochs
+for (let epoch = 0; epoch < 1000; epoch++) {
+    let totalLoss = 0;
+    for (let i = 0; i < inputs.length; i++) {
+        totalLoss += trainNetwork(inputs[i], targets[i]);
+    }
+    if (epoch % 100 === 0) {
+        console.log(`Epoch ${epoch}, Loss: ${totalLoss}`);
+    }
+}
+
+console.log(`Trained w1: ${w1}, b1: ${b1}, w2: ${w2}, b2: ${b2}`);
